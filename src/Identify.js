@@ -1,6 +1,6 @@
 var xmlBase = require('./xmlBase.js');
 var http = require('http');
-var config = require('./configuration.json');
+var config = require('../configuration.json');
 
 module.exports=function identify(host,res){
   var xmldoc;
