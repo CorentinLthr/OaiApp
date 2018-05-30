@@ -1,0 +1,28 @@
+{
+  "name": "oaiapp",
+  "version": "1.0.0",
+  "description": "OaiApp • CouchDB - OAI-PMH protocol connector ====================================================",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "js2xmlparser": "^3.0.0",
+    "morgan": "^1.9.0",
+    "xml": "^1.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CorentinLthr/OaiApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CorentinLthr/OaiApp/issues"
+  },
+  "homepage": "https://github.com/CorentinLthr/OaiApp#readme"
+}

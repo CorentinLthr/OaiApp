@@ -10,6 +10,10 @@ Contact: <jules.gobin@utt.fr> <corentin.laithier@utt.fr> <thomas.fauquemberg@utt
 Installation requirements
 -------------------------
 
+* Git client
+* Node
 
 Installation procedure
 ----------------------
+
+Clone this repository using your git client. Then, at the root of the project, use `npm start`.
