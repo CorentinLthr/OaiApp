@@ -201,7 +201,7 @@ module.exports = function(identifier,metadataPrefix,host, res) {
               //faire gaffe adresse
               if (couchDBdoc._attachments) {
                 xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + Object.keys(couchDBdoc._attachments) + '</dc:identifier>';
-                xmldoc += '<dc:format>pdf</dc:format>';
+                xmldoc += '<dc:format>application/pdf</dc:format>';
               }
               xmldoc += '</oai_dc:dc></metadata></record></GetRecord></OAI-PMH>';
 
