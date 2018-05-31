@@ -51,7 +51,12 @@ module.exports=function(metadataPrefix,from,until,host,res){
 		}
 		param+='}';
 		xmldoc=xmlBase(JSON.parse(param),host);
-		
+		if(from){
+			from=new Date(from).getFullYear()
+		}
+		if(until){
+			until=new Date(until).getFullYear()
+		}
 
 		var url;
 		if(from && until){
@@ -78,8 +83,8 @@ module.exports=function(metadataPrefix,from,until,host,res){
             // we receive the couchdb doc and parse it to an object
             var couchDBdoc = JSON.parse(data);
             //we check if the doc exist, if it doeasnt we send an idDoesNotExist error
-
-            if (couchDBdoc.error || couchDBdoc.total_rows==0) {
+            console.log('total_rows:  '+couchDBdoc.total_rows);
+            if (couchDBdoc.error || couchDBdoc.total_rows==couchDBdoc.offset) {
             	xmldoc+='<error code="noRecordsMatch">pas de record </error></OAI-PMH>';
             	res.set('Content-Type', 'application/xml');
             	res.send(xmldoc);

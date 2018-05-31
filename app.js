@@ -69,7 +69,7 @@ function handleRequest(req, res) {
       listSets(host, res);
     } else if (verb == 'ListMetadataFormats') {
       listMetadataFormats(host,res,identifier);
-    } else if(verb==='ListIdentifiers'){
+    } else if(verb=='ListIdentifiers'){
       listIdentifiers(metadataPrefix,from,until,host,res);
     }else {
       var xmldoc = xmlBase(JSON.parse('{}'),host);
