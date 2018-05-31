@@ -185,22 +185,22 @@ module.exports = function(identifier,metadataPrefix,host, res) {
 
 
               //we add the metadata in dublin core
-              xmldoc += '<dc:title>' + couchDBdoc['DC.title'] + '</dc:title>';
+              xmldoc += '<dc:title>' + couchDBdoc['DC.title'].replace(new RegExp("&",'g'),"&#38;").replace(new RegExp("\n","g"),"").replace(new RegExp('\u000e', 'g'),'') + '</dc:title>';
               for (var i = 0; i < couchDBdoc['DC.creator'].length; i++) {
-                xmldoc += '<dc:creator>' + couchDBdoc['DC.creator'][i] + '</dc:creator>';
+                xmldoc += '<dc:creator>' + couchDBdoc['DC.creator'][i].replace(new RegExp("&",'g'),"&#38;").replace(new RegExp("\n","g"),"").replace(new RegExp('\u000e', 'g'),'') + '</dc:creator>';
               }
               if (couchDBdoc.abstract) {
-                xmldoc += '<dc:description>' + couchDBdoc.abstract + '</dc:description>';
+                xmldoc += '<dc:description>' + couchDBdoc.abstract.replace(new RegExp("&",'g'),"&#38;").replace(new RegExp("\n","g"),"").replace(new RegExp('\u000e', 'g'),'') + '</dc:description>';
               }
               if (couchDBdoc['DC.issued']) {
                 xmldoc += '<dc:date>' + couchDBdoc['DC.issued'] + '</dc:date>';
               }
               if (couchDBdoc['DC.publisher']) {
-                xmldoc += '<dc:publisher>' + couchDBdoc['DC.publisher'] + '</dc:publisher>';
+                xmldoc += '<dc:publisher>' + couchDBdoc['DC.publisher'].replace(new RegExp("&",'g'),"&#38;").replace(new RegExp("\n","g"),"").replace(new RegExp('\u000e', 'g'),'') + '</dc:publisher>';
               }
               //faire gaffe adresse
               if (couchDBdoc._attachments) {
-                xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + Object.keys(couchDBdoc._attachments) + '</dc:identifier>';
+                xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + (Object.keys(couchDBdoc._attachments)[0]).replace(new RegExp("&",'g'),"&#38;").replace(new RegExp("\n","g"),"").replace(new RegExp('\u000e', 'g'),'') + '</dc:identifier>';
                 xmldoc += '<dc:format>application/pdf</dc:format>';
               }
               xmldoc += '</oai_dc:dc></metadata></record></GetRecord></OAI-PMH>';
