@@ -36,6 +36,7 @@ module.exports=function(host,res,identifier){
             par+=',';
           }
           par+='"verb":"ListMetadataFormats"';
+          par+='}';
           xmldoc = xmlBase(JSON.parse(par),host);
           xmldoc += '<error code="idDoesNotExist">No matching identifier</error>';
           xmldoc += '</OAI-PMH>';
@@ -50,6 +51,7 @@ module.exports=function(host,res,identifier){
             par+=',';
           }
           par+='"verb":"ListMetadataFormats"';
+          param+='}';
           xmldoc = xmlBase(JSON.parse(par),host);
           xmldoc += '<ListMetadataFormats><metadataFormat><metadataPrefix>oai_dc</metadataPrefix>'
           xmldoc+='<schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd       </schema>     <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/ </metadataNamespace> </metadataFormat>';
