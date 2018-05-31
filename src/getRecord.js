@@ -7,7 +7,26 @@ module.exports = function(identifier,metadataPrefix,host, res) {
   console.log('verb GetRecord');
   //if there is no identifier we send a badargument error
   if (!identifier) {
-    xmldoc = badArgument(identifier,metadataPrefix,host,"GetRecord");
+    var param;
+    param='{';
+    var first=true;
+
+    if(metadataPrefix){
+      if(!first){
+        param+=',';
+      }
+      param+='"metadataPrefix":"'+metadataPrefix+'"';
+      first=false;
+    }
+    if(!first){
+      param+=',';
+    }
+    param+='"verb":"GetRecord"';
+    first=false;
+    
+    param+='}';
+    xmldoc = badArgument(JSON.parse(param),host);
+
     res.set('Content-Type', 'application/xml');
     res.send(xmldoc);
     //else we check the metadataprefix
@@ -16,7 +35,20 @@ module.exports = function(identifier,metadataPrefix,host, res) {
     //if there are no metadataprefix: again a badargument error
     if (!metadataPrefix) {
       console.log("michel");
-      xmldoc = badArgument(identifier,metadataPrefix,host,"GetRecord");
+
+      var param;
+      param='{';
+      var first=true;
+
+      if(!first){
+        param+=',';
+      }
+      param+='"verb":"GetRecord"';
+      first=false;
+      
+      param+='}';
+      xmldoc = badArgument(JSON.parse(param),host);
+
       res.set('Content-Type', 'application/xml');
       res.send(xmldoc);
     } else {
@@ -24,7 +56,28 @@ module.exports = function(identifier,metadataPrefix,host, res) {
       //we check if the metadataPrefix is oai_dc that is the only one supported as of 20/02/2018
       //if it isn't we send a cannotDisseminateFormat error
       if (!(metadataPrefix === 'oai_dc')) {
-        xmldoc = xmlBase(identifier,metadataPrefix,host,"GetRecord");
+        var param='{';
+        var first=true;
+        if(identifier){
+          param+='"identifier":"'+identifier+'"';
+          first=false;
+        }
+        if(metadataPrefix){
+          if(!first){
+            param+=',';
+          }
+          param+='"metadataPrefix":"'+metadataPrefix+'"';
+          first=false;
+        }
+        
+        if(!first){
+          param+=',';
+        }
+        param+='"verb":"GetRecord"';
+        first=false;
+        
+        param+='}';
+        xmldoc = xmlBase(JSON.parse(param),host);
         xmldoc += '<error code="cannotDisseminateFormat">oai_dc is the only supported format</error></OAI-PMH>';
         res.set('Content-Type', 'application/xml');
         res.send(xmldoc);
@@ -50,16 +103,66 @@ module.exports = function(identifier,metadataPrefix,host, res) {
 
             if (couchDBdoc.error) {
               console.log("toto"+data);
-              xmldoc = xmlBase(identifier,metadataPrefix,host,"GetRecord");
+
+              var param='{';
+              var first=true;
+              if(identifier){
+                param+='"identifier":"'+identifier+'"';
+                first=false;
+              }
+              if(metadataPrefix){
+                if(!first){
+                  param+=',';
+                }
+                param+='"metadataPrefix":"'+metadataPrefix+'"';
+                first=false;
+              }
+
+              if(!first){
+                param+=',';
+              }
+              param+='"verb":"GetRecord"';
+              first=false;
+
+              param+='}';
+
+              xmldoc = xmlBase(JSON.parse(param),host);
               xmldoc += '<error code="idDoesNotExist">No matching identifier</error>';
               xmldoc += '</OAI-PMH>';
               res.set('Content-Type', 'application/xml');
               res.send(xmldoc);
+
+
+
+
             } else {
               console.log("toto"+data);
               console.log("michel"+couchDBdoc);
+
+
+              var param='{';
+              var first=true;
+              if(identifier){
+                param+='"identifier":"'+identifier+'"';
+                first=false;
+              }
+              if(metadataPrefix){
+                if(!first){
+                  param+=',';
+                }
+                param+='"metadataPrefix":"'+metadataPrefix+'"';
+                first=false;
+              }
+
+              if(!first){
+                param+=',';
+              }
+              param+='"verb":"GetRecord"';
+              first=false;
+
+              param+='}';
               // if there are no error we make the xml;
-              xmldoc = xmlBase(identifier,metadataPrefix,host,"GetRecord");
+              xmldoc = xmlBase(JSON.parse(param),host);
               //checker si il fau l'uri du doc ou l'id dans couchdb
               xmldoc += '<GetRecord> <record> <header> <identifier>' + identifier + '</identifier>';
               //ici on est censé mettr la date de dernière modif ou creation, on a pas cadans couchdb ???
@@ -110,8 +213,8 @@ module.exports = function(identifier,metadataPrefix,host, res) {
               res.send(xmldoc);
             }
           });
-        });
-      }
-    }
-  }
+});
+}
+}
+}
 }

@@ -29,11 +29,17 @@ function handleRequest(req, res) {
   var identifier;
   var metadataPrefix;
   var host = req.get('host');
+  var from;
+  var until;
+  
 
   if (req.method == 'GET') {
     verb = req.query.verb;
     identifier = req.query.identifier;
     metadataPrefix = req.query.metadataPrefix;
+    from = req.query.from;
+    until = req.query.until;
+
   } else if (req.method == 'POST') {
     verb = req.body.verb;
     identifier = req.body.identifier;
@@ -51,13 +57,13 @@ function handleRequest(req, res) {
     } else if (verb == 'ListMetadataFormats') {
       listMetadataFormats(host,res,identifier);
     } else {
-      var xmldoc = xmlBase(null, null, host, null);
+      var xmldoc = xmlBase(JSON.parse('{}'),host);
       xmldoc += '<error code="badVerb">Illegal OAI verb</error></OAI-PMH>';
       res.set('Content-Type', 'application/xml');
       res.send(xmldoc);
     }
   } else {
-    var xmldoc = xmlBase(null,null,host,null);
+    var xmldoc = xmlBase(JSON.parse('{}'),host);
     xmldoc += '<error code="badVerb">Illegal OAI verb</error></OAI-PMH>';
     res.set('Content-Type', 'application/xml');
     res.send(xmldoc);

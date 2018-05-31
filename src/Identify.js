@@ -26,8 +26,8 @@ module.exports=function identify(host,res){
       var repoName= config["nom du repository"];
       var email = config["email administrateur"];
 
-
-      xmldoc=xmlBase(null,null,host,"Identify");
+      var param = '{"verb":"Identify"}'
+      xmldoc=xmlBase(JSON.parse(param),host);
       xmldoc+='<Identify>'
       xmldoc+='<repositoryName>'+repoName+'</repositoryName>';
     //BASE URL C4ES HOST ???????????

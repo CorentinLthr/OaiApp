@@ -3,7 +3,8 @@ var http=require('http');
 module.exports=function(host,res,identifier){
   var xmldoc;
   if(!identifier){
-    xmldoc=xmlBase(null,null,host,'ListMetadataFormats');
+    var param='{"verb":"ListMetadataFormats"}';
+    xmldoc=xmlBase(JSON.parse(param),host);
     xmldoc+='<ListMetadataFormats><metadataFormat><metadataPrefix>oai_dc</metadataPrefix>';
     xmldoc+='<schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>';
     xmldoc+='<metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace></metadataFormat>';
@@ -25,11 +26,31 @@ module.exports=function(host,res,identifier){
         //we check if the doc exist, if it doeasnt we send an idDoesNotExist error
 
         if (couchDBdoc.error) {
-          xmldoc = xmlBase(identifier,null,host,"ListMetadataFormats");
+          var par='{';
+          var first=true;
+          if(identifier){
+            par+='"identifier":"'+identifier+'"';
+            first=false;
+          }
+          if(!first){
+            par+=',';
+          }
+          par+='"verb":"ListMetadataFormats"';
+          xmldoc = xmlBase(JSON.parse(par),host);
           xmldoc += '<error code="idDoesNotExist">No matching identifier</error>';
           xmldoc += '</OAI-PMH>';
         } else {
-          xmldoc = xmlBase(identifier,null,host,"ListMetadataFormats");
+          var par='{';
+          var first=true;
+          if(identifier){
+            par+='"identifier":"'+identifier+'"';
+            first=false;
+          }
+          if(!first){
+            par+=',';
+          }
+          par+='"verb":"ListMetadataFormats"';
+          xmldoc = xmlBase(JSON.parse(par),host);
           xmldoc += '<ListMetadataFormats><metadataFormat><metadataPrefix>oai_dc</metadataPrefix>'
           xmldoc+='<schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd       </schema>     <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/ </metadataNamespace> </metadataFormat>';
           xmldoc+='</ListMetadataFormats></OAI-PMH>';
