@@ -10,6 +10,7 @@ var listSets = require('./src/ListSets.js');
 var listMetadataFormats = require('./src/ListMetadataFormats.js');
 var xmlBase = require('./src/xmlBase.js');
 var listIdentifiers= require('./src/ListIdentifiers.js');
+var listRecords= require('./src/ListRecords.js');
 
 var app = express();
 
@@ -71,6 +72,8 @@ function handleRequest(req, res) {
       listMetadataFormats(host,res,identifier);
     } else if(verb=='ListIdentifiers'){
       listIdentifiers(metadataPrefix,from,until,host,res);
+    }else if(verb=='ListRecords'){
+      listRecords(metadataPrefix,from,until,host,res);
     }else {
       var xmldoc = xmlBase(JSON.parse('{}'),host);
       xmldoc += '<error code="badVerb">Illegal OAI verb</error></OAI-PMH>';
