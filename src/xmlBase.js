@@ -1,5 +1,5 @@
 //create xml that is always at the start of the doc
-module.exports=function xmlBase(identifier,metadataPrefix,host,verb) {
+module.exports=function xmlBase(paramJson,host) {
   console.log("entre xmlbase");
 
   var xmldoc = '<?xml version="1.0" encoding="UTF-8"?>';
@@ -11,8 +11,8 @@ module.exports=function xmlBase(identifier,metadataPrefix,host,verb) {
   var date = new Date().toISOString();
 
   xmldoc += '<responseDate>' + date + '</responseDate><request ';
-  if(verb){
-      xmldoc += ' verb="'+verb+ '" ';
+  /*if(paramJson.verb){
+      xmldoc += ' verb="'+verb+'" ';
   }
   if(identifier){
   xmldoc += ' identifier="' + identifier + '" ';
@@ -21,6 +21,15 @@ if(metadataPrefix){
   //req.get('host') A VERIFIER, PA SUR
   xmldoc += ' metadataPrefix="' + metadataPrefix+'"' ;
 }
+*/
+
+Object.keys(paramJson).forEach(function(key) {
+  var val = paramJson[key];
+  xmldoc+= ' '+key+'="'+val+'"';
+})
+
+
+
 xmldoc+= '>' + host+'</request>';
   return xmldoc;
 }
