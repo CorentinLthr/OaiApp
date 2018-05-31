@@ -19,8 +19,7 @@ module.exports=function identify(host,res){
       var couchDBdoc = JSON.parse(data);
       console.log(couchDBdoc.rows[0]);
       earliest_datestamp=couchDBdoc.rows[0];
-      console.log('date:'+JSON.stringify(earliest_datestamp.value));
-      earliest_datestamp=new Date(earliest_datestamp.value).toISOString();
+      earliest_datestamp=new Date(JSON.stringify(earliest_datestamp.key)).toISOString();
       //we get the configuration from json file
 
       var repoName= config["nom du repository"];

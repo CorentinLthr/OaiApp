@@ -9,6 +9,7 @@ var identify= require('./src/Identify.js');
 var listSets = require('./src/ListSets.js');
 var listMetadataFormats = require('./src/ListMetadataFormats.js');
 var xmlBase = require('./src/xmlBase.js');
+var listIdentifiers= require('./src/ListIdentifiers.js');
 
 var app = express();
 
@@ -39,6 +40,18 @@ function handleRequest(req, res) {
     metadataPrefix = req.query.metadataPrefix;
     from = req.query.from;
     until = req.query.until;
+    if(req.query.resumptionToken ){
+      var xmldoc = xmlBase(JSON.parse('{}'),host);
+       xmldoc += '<error code="badVerb">Illegal OAI verb</error></OAI-PMH>';
+    res.set('Content-Type', 'application/xml');
+    res.send(xmldoc);
+    }
+    if(req.query.set){
+      var xmldoc = xmlBase(JSON.parse('{}'),host);
+      xmldoc += '<error code="noSetHierarchy">no set hierarchy</error></OAI-PMH>';
+    res.set('Content-Type', 'application/xml');
+    res.send(xmldoc);
+    }
 
   } else if (req.method == 'POST') {
     verb = req.body.verb;
@@ -56,7 +69,9 @@ function handleRequest(req, res) {
       listSets(host, res);
     } else if (verb == 'ListMetadataFormats') {
       listMetadataFormats(host,res,identifier);
-    } else {
+    } else if(verb=='ListIdentifiers'){
+      listIdentifiers(metadataPrefix,from,until,host,res);
+    }else {
       var xmldoc = xmlBase(JSON.parse('{}'),host);
       xmldoc += '<error code="badVerb">Illegal OAI verb</error></OAI-PMH>';
       res.set('Content-Type', 'application/xml');
