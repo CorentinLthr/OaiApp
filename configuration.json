@@ -1,4 +1,4 @@
 {
-  "email administrateur":["ex@gmail.com","michell"],
-  "nom du repository":"un nom"
+  "admin-email":["ex@gmail.com","michell"],
+  "repository-name":"un nom"
 }
