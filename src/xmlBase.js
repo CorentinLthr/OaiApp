@@ -1,17 +1,23 @@
+/* xmlBase.js
+ * ------
+ * Generate basic XML structure for server responses
+ *
+ */
+ 
 //create xml that is always at the start of the doc
-module.exports=function xmlBase(paramJson,host) {
-  console.log("entre xmlbase");
+module.exports = function xmlBase(paramJson, host) {
+    console.log("Generating an XML response");
 
-  var xmldoc = '<?xml version="1.0" encoding="UTF-8"?>';
-  xmldoc += '<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" ';
-  xmldoc += 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ';
-  // CHECKER ICI LES URI, FAIRE GAFFE AUX ESPACES
-  xmldoc += 'xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ ';
-  xmldoc += 'http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">';
-  var date = new Date().toISOString();
+    var xmldoc = '<?xml version="1.0" encoding="UTF-8"?>';
+    xmldoc += '<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" ';
+    xmldoc += 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ';
+    // CHECKER ICI LES URI, FAIRE GAFFE AUX ESPACES
+    xmldoc += 'xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ ';
+    xmldoc += 'http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">';
+    var date = new Date().toISOString();
 
-  xmldoc += '<responseDate>' + date + '</responseDate><request ';
-  /*if(paramJson.verb){
+    xmldoc += '<responseDate>' + date + '</responseDate><request ';
+    /*if(paramJson.verb){
       xmldoc += ' verb="'+verb+'" ';
   }
   if(identifier){
@@ -23,13 +29,13 @@ if(metadataPrefix){
 }
 */
 
-Object.keys(paramJson).forEach(function(key) {
-  var val = paramJson[key];
-  xmldoc+= ' '+key+'="'+val+'"';
-})
+    Object.keys(paramJson).forEach(function(key) {
+        var val = paramJson[key];
+        xmldoc += ' ' + key + '="' + val + '"';
+    })
 
 
 
-xmldoc+= '>' + host+'</request>';
-  return xmldoc;
+    xmldoc += '>' + host + '</request>';
+    return xmldoc;
 }
