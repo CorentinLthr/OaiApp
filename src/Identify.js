@@ -11,14 +11,22 @@ var config = require('../configuration.json');
 module.exports = function identify(host, res) {
     var xmldoc;
     var earliest_datestamp;
-
+    var auth = 'admin:tQgyM2y1mQCA';
+    console.log(auth);
+    // var auth = 'Basic ' + Buffer.from('admin' + ':' + 'tQgyM2y1mQCA').toString('base64');
     // we get he earliest datestamp
-    http.get('http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_rewrite/oaipmh/earliest_datestamp?descending=false&limit=1', (resp) => {
+    http.get({
+        'host' : '34.229.145.116',
+        'port' : '5984',
+        'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?descending=false&limit=1',
+        'auth' : auth,
+    }, (resp) => {
         let data = '';
 
         // A chunk of data has been recieved.
         resp.on('data', (chunk) => {
             data += chunk;
+            console.log('Got data');
         });
 
         // The whole response has been received
