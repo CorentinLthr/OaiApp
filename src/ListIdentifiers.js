@@ -63,18 +63,27 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             until = new Date(until).getFullYear()
         }
 
-        var url;
+        var path;
         if (from && until) {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?startkey=' + from + '&endkey=' + until;
+            path = '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?startkey=' + from + '&endkey=' + until;
         } else if (from && !until) {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?startkey=' + from;
+            path = '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?startkey=' + from;
         } else if (until && !from) {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?endkey=' + until;
+            path = '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?endkey=' + until;
         } else {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp';
+            path = '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp';
         }
 
-        var deb = http.get(url, (resp) => {
+        var auth = 'admin:tQgyM2y1mQCA';
+    console.log(auth);
+    // var auth = 'Basic ' + Buffer.from('admin' + ':' + 'tQgyM2y1mQCA').toString('base64');
+    // we get he earliest datestamp
+    http.get({
+        'host' : '34.229.145.116',
+        'port' : '5984',
+        'path' : path,
+        'auth' : auth,
+    }, (resp) => {
             let data = '';
 
             // A chunk of data has been recieved.
@@ -86,6 +95,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             resp.on('end', () => {
                 // we receive the couchdb doc and parse it to an object
                 var couchDBdoc = JSON.parse(data);
+               
 
 				//we check if the doc exist, if it doesnt, we send an idDoesNotExist error
                 console.log('total_rows:  ' + couchDBdoc.total_rows);
@@ -99,6 +109,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
                     for (var row of couchDBdoc.rows) {
                         var couchDBdoc = row.value;
                         if (couchDBdoc['DC.issued']) {}
+                            console.log("date: "+couchDBdoc['DC.issued']);
                         tmsp = new Date(couchDBdoc['DC.issued'], 1, 1).toISOString();
                         var id = row.id;
                         xmldoc += '<header>';
