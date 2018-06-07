@@ -91,6 +91,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
                 var couchDBdoc = JSON.parse(data);
 
 
+
 				//we check if the doc exist, if it doesnt, we send an idDoesNotExist error
                 console.log('total_rows:  ' + couchDBdoc.total_rows);
                 if (couchDBdoc.error || couchDBdoc.total_rows == couchDBdoc.offset) {
