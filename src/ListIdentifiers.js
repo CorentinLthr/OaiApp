@@ -73,10 +73,10 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         }
 
         var deb = http.get({
-            'host' : '34.229.145.116',
-            'port' : '5984',
+            'host' : config["couchdb-server"]["host"],
+            'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
-            'auth' : auth,
+            'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         }, (resp) => {
             let data = '';
 
@@ -90,6 +90,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
                 // we receive the couchdb doc and parse it to an object
                 var couchDBdoc = JSON.parse(data);
 
+
 				//we check if the doc exist, if it doesnt, we send an idDoesNotExist error
                 console.log('total_rows:  ' + couchDBdoc.total_rows);
                 if (couchDBdoc.error || couchDBdoc.total_rows == couchDBdoc.offset) {
@@ -102,6 +103,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
                     for (var row of couchDBdoc.rows) {
                         var couchDBdoc = row.value;
                         if (couchDBdoc['DC.issued']) {}
+                            console.log("date: "+couchDBdoc['DC.issued']);
                         tmsp = new Date(couchDBdoc['DC.issued'], 1, 1).toISOString();
                         var id = row.id;
                         xmldoc += '<header>';
