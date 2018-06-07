@@ -63,18 +63,21 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             until = new Date(until).getFullYear()
         }
 
-        var url;
+        var endOfUri;
         if (from && until) {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?startkey=' + from + '&endkey=' + until;
+            url = '?startkey=' + from + '&endkey=' + until;
         } else if (from && !until) {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?startkey=' + from;
+            url = '?startkey=' + from;
         } else if (until && !from) {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?endkey=' + until;
-        } else {
-            url = 'http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_view/earliest_datestamp';
+            url = '?endkey=' + until;
         }
 
-        var deb = http.get(url, (resp) => {
+        var deb = http.get({
+            'host' : '34.229.145.116',
+            'port' : '5984',
+            'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
+            'auth' : auth,
+        }, (resp) => {
             let data = '';
 
             // A chunk of data has been recieved.
