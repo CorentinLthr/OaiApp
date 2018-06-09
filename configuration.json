@@ -2,7 +2,7 @@
     "admin-email": ["ex@gmail.com", "michell"],
     "repository-name": "un nom",
     "couchdb-server": {
-        "host": "34.229.145.116",
+        "host": "18.205.245.20",
         "port": "5984",
         "user": "admin",
         "pass": "tQgyM2y1mQCA",
