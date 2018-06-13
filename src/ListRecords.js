@@ -7,6 +7,7 @@
 var xmlBase = require('./xmlBase.js');
 var badArgument = require('./badArgument.js');
 var http = require('http');
+var config = require('../configuration.json');
 
 module.exports = function(metadataPrefix, from, until, host, res) {
 
@@ -67,7 +68,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             until = new Date(until).getFullYear();
         }
 
-        var endOfUri;
+        var endOfUri='';
         if (from && until) {
             endOfUri = '?startkey=' + from + '&endkey=' + until;
         } else if (from && !until) {
@@ -131,33 +132,34 @@ module.exports = function(metadataPrefix, from, until, host, res) {
 
 
                         //we add the metadata in dublin core
-                        xmldoc += '<dc:title>' + couchDBdoc['DC.title'].replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '') + '</dc:title>';
+                        xmldoc += '<dc:title>' + couchDBdoc['DC.title'].replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '') + '</dc:title>';
                         for (var i = 0; i < couchDBdoc['DC.creator'].length; i++) {
-                            xmldoc += '<dc:creator>' + couchDBdoc['DC.creator'][i].normalize().replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '') + '</dc:creator>';
+                            xmldoc += '<dc:creator>' + couchDBdoc['DC.creator'][i].normalize().replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '') + '</dc:creator>';
                         }
                         if (couchDBdoc.abstract) {
-                            xmldoc += '<dc:description>' + couchDBdoc.abstract.replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '') + '</dc:description>';
+                            xmldoc += '<dc:description>' + couchDBdoc.abstract.replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '') + '</dc:description>';
                         }
                         if (couchDBdoc['DC.issued']) {
                             xmldoc += '<dc:date>' + couchDBdoc['DC.issued'] + '</dc:date>';
                         }
                         if (couchDBdoc['DC.publisher']) {
-                            xmldoc += '<dc:publisher>' + couchDBdoc['DC.publisher'].replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '') + '</dc:publisher>';
+                            xmldoc += '<dc:publisher>' + couchDBdoc['DC.publisher'].replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '')  + '</dc:publisher>';
                         }
                         //faire gaffe adresse
                         if (couchDBdoc._attachments) {
-                            xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + (Object.keys(couchDBdoc._attachments)[0]).replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '')+ '</dc:identifier>';
+                            xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + (Object.keys(couchDBdoc._attachments)[0]).replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '')+ '</dc:identifier>';
                             xmldoc += '<dc:format>application/pdf</dc:format>';
                         }
 
 
                         xmldoc += '</oai_dc:dc></metadata></record>';
                     }
-
-                }
-                xmldoc += '</ListRecords></OAI-PMH>';
+                    xmldoc += '</ListRecords></OAI-PMH>';
                 res.set('Content-Type', 'application/xml');
                 res.send(xmldoc);
+
+                }
+                
             });
 
 
