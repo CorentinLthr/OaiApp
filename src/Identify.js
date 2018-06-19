@@ -11,15 +11,14 @@ var config = require('../configuration.json');
 module.exports = function identify(host, res) {
     var xmldoc;
     var earliest_datestamp;
-    var auth = 'admin:tQgyM2y1mQCA';
-    console.log(auth);
+    
     // var auth = 'Basic ' + Buffer.from('admin' + ':' + 'tQgyM2y1mQCA').toString('base64');
     // we get he earliest datestamp
     http.get({
-        'host' : '34.229.145.116',
-        'port' : '5984',
+        'host' : config["couchdb-server"]["host"],
+        'port' : config["couchdb-server"]["port"],
         'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?descending=false&limit=1',
-        'auth' : auth,
+          'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
     }, (resp) => {
         let data = '';
 
