@@ -47,7 +47,7 @@ function handleRequest(req, res) {
             res.set('Content-Type', 'application/xml');
             res.send(xmldoc);
         }
-        if (req.query.set) {
+       else if (req.query.set) {
             var xmldoc = xmlBase(JSON.parse('{}'), host);
             xmldoc += '<error code="noSetHierarchy">no set hierarchy</error></OAI-PMH>';
             res.set('Content-Type', 'application/xml');
@@ -63,6 +63,7 @@ function handleRequest(req, res) {
     if (verb) {
         console.log('verb ok');
         if (verb === 'GetRecord') {
+            console.log('getRecord');
             getRecord(identifier, metadataPrefix, host, res);
         } else if (verb == 'Identify') {
             identify(host, res);

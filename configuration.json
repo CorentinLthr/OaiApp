@@ -1,10 +1,10 @@
 {
-    "admin-email": ["ex@gmail.com", "michell"],
-    "repository-name": "un nom",
+    "admin-email": ["admin@domain.com", "Administrator"],
+    "repository-name": "Publications UTT",
     "couchdb-server": {
-        "host": "34.229.145.116",
+        "host": "52.87.167.20",
         "port": "5984",
         "user": "admin",
-        "pass": "tQgyM2y1mQCA",
+        "pass": "tQgyM2y1mQCA"
     }
 }
