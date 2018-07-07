@@ -9,6 +9,7 @@ var http = require('http');
 
 module.exports = function(host, res, identifier) {
     var xmldoc;
+    //if the param identifier does not exist we simply respond that we only support oai_dc
     if (!identifier) {
         var param = '{"verb":"ListMetadataFormats"}';
         xmldoc = xmlBase(JSON.parse(param), host);
@@ -18,8 +19,15 @@ module.exports = function(host, res, identifier) {
         xmldoc += '</ListMetadataFormats></OAI-PMH>';
         res.set('Content-Type', 'application/xml');
         res.send(xmldoc);
+        //else we check if the doc exist, if it exist we respond oai_dc else we send an error
     } else {
-        var deb = http.get('http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_rewrite/oaipmh/' + identifier, (resp) => {
+        var deb = http.get({
+            'host' : config["couchdb-server"]["host"],
+            'port' : config["couchdb-server"]["port"],
+            'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
+            //IF THERE IS NO IDENTIFICATION ONTHE COUCHDB SERVER THE FOLLOWING LINE SHOULD BE COMMENTED, IF THERE IS, UNCOMMENTED
+            //'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+        }, (resp) => {
             let data = '';
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {

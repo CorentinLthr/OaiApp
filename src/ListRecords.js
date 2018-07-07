@@ -8,6 +8,7 @@ var xmlBase = require('./xmlBase.js');
 var badArgument = require('./badArgument.js');
 var http = require('http');
 var config = require('../configuration.json');
+var filter =require('./recordFilter.js');
 
 module.exports = function(metadataPrefix, from, until, host, res) {
 
@@ -28,6 +29,7 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         var xmldoc = badArgument(JSON.parse(param), host);
         res.set('Content-Type', 'application/xml');
         res.send(xmldoc);
+
     } else if (metadataPrefix != 'oai_dc') {
         console.log("pas oai_dc");
         var param = '{"metadataPrefix":"' + metadataPrefix + '"';
@@ -45,8 +47,8 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         xmldoc += '<error code="cannotDisseminateFormat">oai_dc required</error></OAI-PMH>';
         res.set('Content-Type', 'application/xml');
         res.send(xmldoc);
-    } else {
 
+    } else {
         var param = '{';
         var xmldoc;
         param += '"verb":"ListRecords"';
@@ -78,14 +80,13 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         } else {
             endOfUri = '?';
         }
-        console.log("url choisie");
-        // var auth = 'Basic ' + Buffer.from('admin' + ':' + 'tQgyM2y1mQCA').toString('base64');
-        // we get he earliest datestamp
+        //the view earliest datestamp give all the doc info with the issued date as key
         http.get({
             'host' : config["couchdb-server"]["host"],
             'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
-            'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+            //IF THERE IS NO IDENTIFICATION ONTHE COUCHDB SERVER THE FOLLOWING LINE SHOULD BE COMMENTED, IF THERE IS, UNCOMMENTED
+            //'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         }, (resp) => {
             let data = '';
 
@@ -132,22 +133,23 @@ module.exports = function(metadataPrefix, from, until, host, res) {
 
 
                         //we add the metadata in dublin core
-                        xmldoc += '<dc:title>' + couchDBdoc['DC.title'].replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '') + '</dc:title>';
+                        xmldoc += '<dc:title>' + filter(couchDBdoc['DC.title'])+ '</dc:title>';
                         for (var i = 0; i < couchDBdoc['DC.creator'].length; i++) {
-                            xmldoc += '<dc:creator>' + couchDBdoc['DC.creator'][i].normalize().replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '') + '</dc:creator>';
+                            xmldoc += '<dc:creator>' + filter(couchDBdoc['DC.creator'][i].normalize())+ '</dc:creator>';
                         }
                         if (couchDBdoc.abstract) {
-                            xmldoc += '<dc:description>' + couchDBdoc.abstract.replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '') + '</dc:description>';
+                            xmldoc += '<dc:description>' + filter(couchDBdoc.abstract)+ '</dc:description>';
                         }
                         if (couchDBdoc['DC.issued']) {
                             xmldoc += '<dc:date>' + couchDBdoc['DC.issued'] + '</dc:date>';
                         }
                         if (couchDBdoc['DC.publisher']) {
-                            xmldoc += '<dc:publisher>' + couchDBdoc['DC.publisher'].replace(new RegExp("\u000b", 'g'), "").replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '')  + '</dc:publisher>';
+                            xmldoc += '<dc:publisher>' + filter(couchDBdoc['DC.publisher'])+ '</dc:publisher>';
                         }
-                        //faire gaffe adresse
+                      
                         if (couchDBdoc._attachments) {
-                            xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + (Object.keys(couchDBdoc._attachments)[0]).replace(new RegExp("&", 'g'), "&#38;").replace(new RegExp("\n", "g"), "").replace(new RegExp('\u000e', 'g'), '').replace(new RegExp('<', 'g'), '&lt;').replace(new RegExp('>', 'g'), '&gt;').replace(new RegExp('\f', 'g'), 'fi').replace(new RegExp('\u001d', 'g'), '').replace(new RegExp('\u0003', 'g'), '').replace(new RegExp('\u0001', 'g'), '')+ '</dc:identifier>';
+                            
+                            xmldoc += '<dc:identifier>http://publications.icd.utt.fr/' + couchDBdoc._id + '/' + filter(Object.keys(couchDBdoc._attachments)[0])+ '</dc:identifier>';
                             xmldoc += '<dc:format>application/pdf</dc:format>';
                         }
 

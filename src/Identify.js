@@ -12,13 +12,13 @@ module.exports = function identify(host, res) {
     var xmldoc;
     var earliest_datestamp;
     
-    // var auth = 'Basic ' + Buffer.from('admin' + ':' + 'tQgyM2y1mQCA').toString('base64');
-    // we get he earliest datestamp
+
     http.get({
         'host' : config["couchdb-server"]["host"],
         'port' : config["couchdb-server"]["port"],
         'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp?descending=false&limit=1',
-          'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+         //IF THERE IS NO IDENTIFICATION ONTHE COUCHDB SERVER THE FOLLOWING LINE SHOULD BE COMMENTED, IF THERE IS, UNCOMMENTED
+         // 'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
     }, (resp) => {
         let data = '';
 
@@ -33,6 +33,7 @@ module.exports = function identify(host, res) {
             var couchDBdoc = JSON.parse(data);
             console.log(couchDBdoc.rows[0]);
             earliest_datestamp = couchDBdoc.rows[0];
+            //oaipmh require a date in iso format but we only have year so we put the first date at the 1 january of the year
             earliest_datestamp = new Date(JSON.stringify(earliest_datestamp.key)).toISOString();
 
             // Read the configuration from configuration.json file
@@ -43,10 +44,11 @@ module.exports = function identify(host, res) {
             xmldoc = xmlBase(JSON.parse(param), host);
             xmldoc += '<Identify>'
             xmldoc += '<repositoryName>' + repoName + '</repositoryName>';
-            //BASE URL C4ES HOST ???????????
+           //we put the host as base url but this need to be adapted
+           //base url is the url where the harvester will make his request, see oaipmh description for more info
             xmldoc += '<baseURL>' + host + '</baseURL>';
             xmldoc += '<protocolVersion>2.0</protocolVersion>';
-            //EMAILADMIN §!!!!!!!!
+           
             for (var i = 0; i < email.length; i++) {
                 xmldoc += '<adminEmail>' + email[i] + '</adminEmail>';
             }

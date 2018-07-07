@@ -8,6 +8,7 @@ var badArgument = require('./badArgument.js');
 var http = require('http');
 var config = require('../configuration.json');
 
+
 module.exports = function(metadataPrefix, from, until, host, res) {
 
     if (!metadataPrefix) {
@@ -43,7 +44,9 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         xmldoc += '<error code="cannotDisseminateFormat">oai_dc required</error></OAI-PMH>';
         res.set('Content-Type', 'application/xml');
         res.send(xmldoc);
-    } else {
+    } 
+
+    else {
         console.log('metadataPrefix: oai_dc');
         var param = '{';
         var xmldoc;
@@ -65,7 +68,9 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         if (until) {
             until = new Date(until).getFullYear()
         }
+        //if the parameter from and until exist, we adapt the uri of the couchdb request 
 
+        //the view earliest_datestamp give all the docs with all the info and the key is the issued year
         var endOfUri='';
         if (from && until) {
             endOfUri = '?startkey=' + from + '&endkey=' + until;
@@ -78,13 +83,14 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             'host' : config["couchdb-server"]["host"],
             'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
-            'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+            //IF THERE IS NO IDENTIFICATION ONTHE COUCHDB SERVER THE FOLLOWING LINE SHOULD BE COMMENTED, IF THERE IS, UNCOMMENTED
+           // 'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         });
         var deb = http.get({
             'host' : config["couchdb-server"]["host"],
             'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
-            'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+           // 'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         }, (resp) => {
             let data = '';
 
