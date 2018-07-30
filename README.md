@@ -7,6 +7,11 @@ Contact: <jules.gobin@utt.fr> - <corentin.laithier@utt.fr> - <thomas.fauquemberg
 
 *Tool developed as part of a student project*
 
+Important note :warning: 
+------------------------
+
+**This branch is currently being manually merged into the master branch. Please wait before use. We'll update this document to keep you informed.**
+
 Installation requirements
 -------------------------
 
