@@ -9,6 +9,14 @@ var badArgument = require('./badArgument.js');
 var xmlBase = require('./xmlBase.js');
 var config = require('../configuration.json');
 var filter = require('./recordFilter.js');
+
+/**
+ * Generate a record for a precise doc
+ * @param {number} identifier the identifier of the doc we want the record of
+ * @param {string} metadataPrefix the metadataprefix we want for the record
+ * @param {string} the uri  we want to show on the record
+ * @param {object} res the response object
+ */
 module.exports = function(identifier, metadataPrefix, host, res) {
     var xmldoc;
     console.log('Detected verb : GetRecord');
@@ -97,9 +105,12 @@ module.exports = function(identifier, metadataPrefix, host, res) {
                     'host' : config["couchdb-server"]["host"],
                     'port' : config["couchdb-server"]["port"],
                     'path' : '/tire-a-part/' + identifier,
+                    /*
+                     * THE FOLLOWING LINE IS FOR COUCHDB AUTHENTICATION (CREDENTIALS IN CONFIG FILE).
+                     * IF IT IS NOT USED THE LINE SHOULD BE COMMENTED OUT.
+                     */
                     'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
                 },
-                //  var deb = http.get('http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_rewrite/oaipmh/' + identifier,
                (resp) => {
                     let data = '';
 
@@ -111,14 +122,14 @@ module.exports = function(identifier, metadataPrefix, host, res) {
                     // The whole response has been received
                     resp.on('end', () => {
 
-                        // we receive the couchdb doc and parse it to an object
+                        // We receive the couchdb doc and parse it to an object
                         var couchDBdoc = JSON.parse(data);
                         console.log("CouchDB Doc : " + couchDBdoc);
-                        //we check if the doc exist, if it doeasnt we send an idDoesNotExist error
-
+                        // We check if the doc exist, if it doesn't we send an idDoesNotExist error.
+                        // If the doc does not exist couchDB.error should exist, and it shoud not exist otherwise.
                         if (couchDBdoc.error) {
                             console.log("Data : " + data);
-
+                            // Construction of the JSON parameters for xmlBase()
                             var param = '{';
                             var first = true;
                             if (identifier) {
@@ -140,7 +151,7 @@ module.exports = function(identifier, metadataPrefix, host, res) {
                             first = false;
 
                             param += '}';
-
+                            // We use xmlBase to construct the base of the xml doc
                             xmldoc = xmlBase(JSON.parse(param), host);
                             xmldoc += '<error code="idDoesNotExist">No matching identifier</error>';
                             xmldoc += '</OAI-PMH>';
@@ -154,7 +165,7 @@ module.exports = function(identifier, metadataPrefix, host, res) {
                             console.log("Data : " + data);
                             console.log("CouchDBDoc : " + couchDBdoc);
 
-
+                            // Construction of the JSON parameters for xmlBase()
                             var param = '{';
                             var first = true;
                             if (identifier) {
@@ -179,11 +190,9 @@ module.exports = function(identifier, metadataPrefix, host, res) {
                             // if there are no error we make the xml;
                             xmldoc = xmlBase(JSON.parse(param), host);
 
-                            //checker si il fau l'uri du doc ou l'id dans couchdb
                             xmldoc += '<GetRecord> <record> <header> <identifier>' + identifier + '</identifier>';
-                            //ici on est censé mettr la date de dernière modif ou creation, on a pas cadans couchdb ???
-                            // donc on met la date du doc ?
-                            var timestamp
+                            // OAIPMH requires the date to be in ISO format but as we only have years (issued). So, we take the year and put the date to January 1st.
+                            var timestamp;
                             if (couchDBdoc.timestamp) {
                                 timestamp = couchDBdoc.timestamp;
                                 //if the doc doesnt have a timestamp we put it at the 1st day of the publication year

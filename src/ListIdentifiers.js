@@ -66,6 +66,9 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             until = new Date(until).getFullYear()
         }
 
+        /* If the parameters from and until exist, we adapt the URI of the couchdb request.
+         * The CouchDB view earliest_datestamp gives all the docs with all the info. The key is the issued year.
+         */
         var endOfUri='';
         if (from && until) {
             endOfUri = '?startkey=' + from + '&endkey=' + until;
@@ -78,12 +81,20 @@ module.exports = function(metadataPrefix, from, until, host, res) {
             'host' : config["couchdb-server"]["host"],
             'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
+            /*
+             * THE FOLLOWING LINE IS FOR COUCHDB AUTHENTICATION (CREDENTIALS IN CONFIG FILE).
+             * IF IT IS NOT USED THE LINE SHOULD BE COMMENTED OUT.
+             */
             'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         });
         var deb = http.get({
             'host' : config["couchdb-server"]["host"],
             'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
+            /*
+             * THE FOLLOWING LINE IS FOR COUCHDB AUTHENTICATION (CREDENTIALS IN CONFIG FILE).
+             * IF IT IS NOT USED THE LINE SHOULD BE COMMENTED OUT.
+             */
             'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         }, (resp) => {
             let data = '';

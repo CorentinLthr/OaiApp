@@ -79,14 +79,17 @@ module.exports = function(metadataPrefix, from, until, host, res) {
         } else {
             endOfUri = '?';
         }
-        console.log("url choisie");
-        // var auth = 'Basic ' + Buffer.from('admin' + ':' + 'tQgyM2y1mQCA').toString('base64');
-        // we get he earliest datestamp
+
+        // The CouchDB view earliest datestamp gives all the doc info with the issued date as key.
         http.get({
             'host' : config["couchdb-server"]["host"],
             'port' : config["couchdb-server"]["port"],
             'path' : '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
-            'auth' : config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+            /*
+             * THE FOLLOWING LINE IS FOR COUCHDB AUTHENTICATION (CREDENTIALS IN CONFIG FILE).
+             * IF IT IS NOT USED THE LINE SHOULD BE COMMENTED OUT.
+             */
+            'auth': config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
         }, (resp) => {
             let data = '';
 

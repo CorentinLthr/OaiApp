@@ -5,6 +5,10 @@
 
 var xmlBase = require('./xmlBase.js')
 
+/**
+ * badArgument
+ * @param {json} paramJson contains the basic info to put int the opening <request>
+ */
 module.exports = function badArgument(paramJson, host) {
     console.log('Generating a badArgument error');
 

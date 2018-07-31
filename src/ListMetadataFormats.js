@@ -9,6 +9,7 @@ var http = require('http');
 
 module.exports = function(host, res, identifier) {
     var xmldoc;
+    // If the param identifier does not exist, we simply respond that we only support oai_dc.
     if (!identifier) {
         var param = '{"verb":"ListMetadataFormats"}';
         xmldoc = xmlBase(JSON.parse(param), host);
@@ -18,20 +19,30 @@ module.exports = function(host, res, identifier) {
         xmldoc += '</ListMetadataFormats></OAI-PMH>';
         res.set('Content-Type', 'application/xml');
         res.send(xmldoc);
+    // Else, we check if the doc exists. If it indeed exists, we respond oai_dc, else we send an error.
     } else {
-        var deb = http.get('http://127.0.0.1:5984/tire-a-part/_design/tire-a-part/_rewrite/oaipmh/' + identifier, (resp) => {
+        var deb = http.get({
+            'host': config["couchdb-server"]["host"],
+            'port': config["couchdb-server"]["port"],
+            'path': '/tire-a-part/_design/tire-a-part/_view/earliest_datestamp' + endOfUri,
+            /*
+             * THE FOLLOWING LINE IS FOR COUCHDB AUTHENTICATION (CREDENTIALS IN CONFIG FILE).
+             * IF IT IS NOT USED THE LINE SHOULD BE COMMENTED OUT.
+             */
+            'auth': config["couchdb-server"]["user"] + ":" + config["couchdb-server"]["pass"],
+        }, (resp) => {
             let data = '';
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {
                 data += chunk;
             });
-            // The whole response has been received
+            // The whole response has been received.
             resp.on('end', () => {
-                // we receive the couchdb doc and parse it to an object
+                // We receive the CouchDB doc and parse it to an object.
                 var couchDBdoc = JSON.parse(data);
                 console.log("michel" + couchDBdoc);
-                //we check if the doc exist, if it doeasnt we send an idDoesNotExist error
 
+                // We check if the doc exists, if it doesn't we send an idDoesNotExist error.
                 if (couchDBdoc.error) {
                     var par = '{';
                     var first = true;

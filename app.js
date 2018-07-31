@@ -34,7 +34,7 @@ function handleRequest(req, res) {
     var from;
     var until;
 
-
+    // To support GET and POST, we first take all parameters from either the POST or GET request so the following doesn't depend on the request type.
     if (req.method == 'GET') {
         verb = req.query.verb;
         identifier = req.query.identifier;
@@ -60,6 +60,7 @@ function handleRequest(req, res) {
         metadataPrefix = req.body.metadataPrefix;
     }
 
+     // We check if the required verb parameters is present and then route to the appropriate function
     if (verb) {
         console.log('verb ok');
         if (verb === 'GetRecord') {
@@ -75,7 +76,7 @@ function handleRequest(req, res) {
             listIdentifiers(metadataPrefix, from, until, host, res);
         } else if (verb == 'ListRecords') {
             listRecords(metadataPrefix, from, until, host, res);
-        } else {
+        } else { // if there's no verb, we return an error message
             var xmldoc = xmlBase(JSON.parse('{}'), host);
             xmldoc += '<error code="badVerb">Illegal OAI verb</error></OAI-PMH>';
             res.set('Content-Type', 'application/xml');
