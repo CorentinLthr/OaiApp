@@ -10,7 +10,9 @@ Contact: <jules.gobin@utt.fr> - <corentin.laithier@utt.fr> - <thomas.fauquemberg
 Important note :warning: 
 ------------------------
 
-**This branch is currently being manually merged into the master branch. Please wait before use. We'll update this document to keep you informed.**
+This branch is currently being manually merged into the `master` branch. Please wait before use. We'll update this document to keep you informed.
+
+**[Update] : Merge is complete, please use the `master` branch.**
 
 Installation requirements
 -------------------------
